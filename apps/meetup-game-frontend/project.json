@@ -1,0 +1,9 @@
+{
+  "name": "meetup-game-frontend",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/meetup-game-frontend/src",
+  "projectType": "application",
+  "tags": [],
+  "// targets": "to see all targets run: nx show project meetup-game-frontend --web",
+  "targets": {}
+}
