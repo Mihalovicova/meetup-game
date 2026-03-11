@@ -28,6 +28,13 @@ export default [
           ],
         },
       ],
+      'no-warning-comments': [
+        'warn',
+        {
+          terms: ['todo', 'fixme'],
+          location: 'anywhere',
+        },
+      ],
     },
   },
   {
