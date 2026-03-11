@@ -35,6 +35,8 @@ export default [
           location: 'anywhere',
         },
       ],
+      'no-debugger': 'warn',
+      'prefer-const': 'error'
     },
   },
   {
