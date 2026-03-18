@@ -1,0 +1,143 @@
+@startuml MeetUp Game ERD
+
+!theme toy
+
+hide circle
+skinparam linetype ortho
+left to right direction
+
+entity "User" as user {
+  * user_id : UUID
+  --
+  + email : String <<unique>>
+  + name : String
+  + surname: String
+  + hashedPassword : String
+  + salt: String
+  - birthDate : Date
+  --
+  + createdAt : TimeStamp
+  - updatedAt : TimeStamp
+  - deletedAt : TimeStamp
+}
+
+entity "Group" as group {
+  * group_id : UUID
+  --
+  + name : String
+  --
+  + createdAt : TimeStamp
+  - updatedAt : TimeStamp
+  - deletedAt : TimeStamp
+}
+
+entity "GroupMember" as group_member {
+    * group_member_id : UUID
+    --
+    + user_id : UUID <<FK>>
+    + group_id : UUID <<FK>>
+    + isAdmin : Boolean
+    + totalPoints : Integer
+    --
+    + createdAt : TimeStamp
+    - updatedAt : TimeStamp
+    - deletedAt : TimeStamp
+}
+
+entity "Goal" as goal {
+  * goal_id : UUID
+  --
+  + created_by : UUID <<FK to User>>
+  + description : String
+  - group_id : UUID <<FK>>
+  --
+  + createdAt : TimeStamp
+  - updatedAt : TimeStamp
+  - deletedAt : TimeStamp
+}
+
+entity "Period" as period {
+  * period_id : UUID
+  --
+  + group_id : UUID <<FK>>
+  + goal_id : UUID <<FK>>
+  + snapshotGoalDescription : String
+  + startDate : Date
+  + endDate : Date
+  + isActive : Boolean
+  --
+  + createdAt : TimeStamp
+  - updatedAt : TimeStamp
+  - deletedAt : TimeStamp
+}
+
+entity "GameCard" as game_card {
+  * game_card_id : UUID
+  --
+  + user_id : UUID <<FK>>
+  + period_id : UUID <<FK>>
+  + currentPoints : Integer 
+  + penaltyCount : Integer
+  --
+  + createdAt : TimeStamp
+  - updatedAt : TimeStamp
+  - deletedAt : TimeStamp
+}
+
+entity "Penalty" as penalty {
+  * penalty_id : UUID
+  --
+  + game_card_id : UUID <<FK>>
+  + pointsTaken : Integer
+  + reason : Reason
+  --
+  + createdAt : TimeStamp
+  - updatedAt : TimeStamp
+  - deletedAt : TimeStamp
+}
+
+enum Reason #CCCCCC {
+  spam
+  timeout
+  admin
+}
+
+entity "Cell" as cell {
+  * cell_id : UUID
+  --
+  + game_card_id : UUID <<FK>>
+  + friend_id : UUID <<FK to User>>
+  + state : String
+  + position : Integer
+  + declineCount : Integer
+  + withdrawCount : Integer
+  - lastRequestedAt : DateTime
+  --
+  + createdAt : TimeStamp
+  - updatedAt : TimeStamp
+  - deletedAt : TimeStamp
+}
+
+enum State #CCCCCC {
+  pending
+  confirmed
+  untouched
+}
+
+user ||--o{ group_member
+user ||--o{ game_card
+user ||--o{cell: friend to complete goal with
+user ||--o{ goal : created by
+group |o--o{ goal
+group ||--o{ group_member
+group ||--o{ period
+goal ||--o{ period
+period ||--o{ game_card
+game_card ||--|{ cell
+game_card ||--o{ penalty
+
+
+cell -[hidden]right- State
+penalty -[hidden]right- Reason
+
+@enduml
